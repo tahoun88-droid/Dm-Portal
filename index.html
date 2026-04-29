@@ -2,11 +2,49 @@
 <html lang="ar">
 <head>
   <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>DM Portal</title>
+
   <style>
-    body { font-family: Arial; background:#f4f7fb; padding:20px; }
-    .card { background:#fff; padding:20px; border-radius:10px; margin-bottom:15px; }
-    button { padding:10px 15px; margin-top:10px; cursor:pointer; }
+    body {
+      font-family: Arial;
+      background: #f4f7fb;
+      padding: 20px;
+      direction: rtl;
+    }
+
+    h1 {
+      text-align: center;
+    }
+
+    .card {
+      background: white;
+      padding: 20px;
+      border-radius: 12px;
+      margin-bottom: 15px;
+      box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+    }
+
+    input, textarea {
+      width: 100%;
+      padding: 10px;
+      margin: 5px 0;
+      border-radius: 8px;
+      border: 1px solid #ccc;
+    }
+
+    button {
+      background: #007bff;
+      color: white;
+      padding: 10px;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+    }
+
+    button:hover {
+      background: #0056b3;
+    }
   </style>
 </head>
 
@@ -16,31 +54,56 @@
 
   <div class="card">
     <h3>رفع طلب</h3>
-    <input id="title" placeholder="عنوان الطلب"><br><br>
-    <textarea id="desc" placeholder="التفاصيل"></textarea><br>
+
+    <input id="title" placeholder="عنوان الطلب">
+    <textarea id="desc" placeholder="تفاصيل الطلب"></textarea>
+
     <button onclick="add()">رفع</button>
   </div>
 
   <div id="list"></div>
 
   <script>
-    let data = JSON.parse(localStorage.getItem("data")) || [];
+    let data = JSON.parse(localStorage.getItem("dm_data")) || [];
 
-    function add(){
-      let t = document.getElementById("title").value;
-      let d = document.getElementById("desc").value;
+    function add() {
+      let title = document.getElementById("title").value;
+      let desc = document.getElementById("desc").value;
 
-      data.push({title:t, desc:d});
-      localStorage.setItem("data", JSON.stringify(data));
+      if (!title || !desc) {
+        alert("املا البيانات يا نجم");
+        return;
+      }
+
+      data.push({ title, desc });
+      localStorage.setItem("dm_data", JSON.stringify(data));
+
+      document.getElementById("title").value = "";
+      document.getElementById("desc").value = "";
+
       render();
     }
 
-    function render(){
+    function render() {
       let html = "";
-      data.forEach(x=>{
-        html += `<div class="card"><b>${x.title}</b><br>${x.desc}</div>`;
+
+      data.forEach((item, i) => {
+        html += `
+          <div class="card">
+            <b>${item.title}</b>
+            <p>${item.desc}</p>
+            <button onclick="del(${i})">حذف</button>
+          </div>
+        `;
       });
+
       document.getElementById("list").innerHTML = html;
+    }
+
+    function del(index) {
+      data.splice(index, 1);
+      localStorage.setItem("dm_data", JSON.stringify(data));
+      render();
     }
 
     render();

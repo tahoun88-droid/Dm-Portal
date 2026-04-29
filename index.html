@@ -1,10 +1,50 @@
 <!DOCTYPE html>
-<html>
+<html lang="ar">
 <head>
+  <meta charset="UTF-8">
   <title>DM Portal</title>
+  <style>
+    body { font-family: Arial; background:#f4f7fb; padding:20px; }
+    .card { background:#fff; padding:20px; border-radius:10px; margin-bottom:15px; }
+    button { padding:10px 15px; margin-top:10px; cursor:pointer; }
+  </style>
 </head>
+
 <body>
+
   <h1>DM Portal 🔥</h1>
-  <p>التطبيق شغال يا طاحون</p>
+
+  <div class="card">
+    <h3>رفع طلب</h3>
+    <input id="title" placeholder="عنوان الطلب"><br><br>
+    <textarea id="desc" placeholder="التفاصيل"></textarea><br>
+    <button onclick="add()">رفع</button>
+  </div>
+
+  <div id="list"></div>
+
+  <script>
+    let data = JSON.parse(localStorage.getItem("data")) || [];
+
+    function add(){
+      let t = document.getElementById("title").value;
+      let d = document.getElementById("desc").value;
+
+      data.push({title:t, desc:d});
+      localStorage.setItem("data", JSON.stringify(data));
+      render();
+    }
+
+    function render(){
+      let html = "";
+      data.forEach(x=>{
+        html += `<div class="card"><b>${x.title}</b><br>${x.desc}</div>`;
+      });
+      document.getElementById("list").innerHTML = html;
+    }
+
+    render();
+  </script>
+
 </body>
 </html>
